@@ -1,13 +1,11 @@
 :root {
-    --clr-primary: rgb(54, 112, 199);
+    --clr-primary: rgb(81, 100, 129);
     --clr-light: #f4f4f4;
     --clr-dark: #333;
-    --clr-warning: rgb(99, 36, 36);
+    --clr-warning: rgb(221, 31, 31);
   }
   
-  *,
-  *::before,
-  *::after {
+  *, *::before, *::after {
     font-family: inherit;
     box-sizing: border-box;
   }
@@ -31,6 +29,7 @@
     color: rgba(0, 0, 0, 0.1);
     letter-spacing: 2px;
     margin: -0.3em 0 0.5em;
+    padding: 2rem;
   }
   
   .all-tasks {
