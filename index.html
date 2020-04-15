@@ -13,9 +13,9 @@
     <div class="all-tasks">
         <h2 class="task-list-title">My list</h2>
         <ul class="task-list">
-            <li class="active-list">House</li>
-            <li>School</li>
-            <li>Grocery</li>
+            <li class="list-name active-list">House</li>
+            <li class="list-name">School</li>
+            <li class="list-name">Grocery</li>
         </ul>
         <form action="">
             <input 
@@ -24,13 +24,13 @@
             placeholder="new list name"
             aria-label="new list name"
             />
-            <button class="btn list" aria-label="create new list">+</button>
+            <button class="btn create" aria-label="create new list">+</button>
         </form>
     </div>
 
     <div class="todo-list">
         <div class="todo-header">
-            <h2 class="list-title">School</h2>
+            <h2 class="list-title">House</h2>
             <p class="task-counter">3 task remaining</p>
         </div>
         <div class="todo-body">
@@ -73,11 +73,11 @@
                 <form action="">
                     <input 
                     type="text"
-                    class="new list"
+                    class="new task"
                     placeholder="new task name"
                     aria-label="new task name"
                     />
-                    <button class="btn task" aria-label="create new task">+</button>
+                    <button class="btn create" aria-label="create new task">+</button>
                 </form>
             </div>
             <div class="delete-stuff">
