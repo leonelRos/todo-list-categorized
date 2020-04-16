@@ -12,15 +12,13 @@
     <h1 class="title">Things in my List</h1>
     <div class="all-tasks">
         <h2 class="task-list-title data-list">My list</h2>
-        <ul class="task-list" data-list>
-            <!-- <li class="list-name active-list">House</li>
-            <li class="list-name">School</li>
-            <li class="list-name">Grocery</li> -->
-        </ul>
-        <form action="">
+        <ul class="task-list" data-list></ul>
+        <!-- adding an atribute to form and input  -->
+        <form action="" data-new-list-form>
             <input 
             type="text"
             class="new list"
+            data-new-input-form
             placeholder="new list name"
             aria-label="new list name"
             />
@@ -28,51 +26,18 @@
         </form>
     </div>
 
-    <div class="todo-list">
+    <div class="todo-list" data-list-display-container>
         <div class="todo-header">
-            <h2 class="list-title">House</h2>
-            <p class="task-counter">3 task remaining</p>
+            <h2 class="list-title" data-list-title></h2>
+            <p class="task-counter" data-list-counter></p>
         </div>
         <div class="todo-body">
-            <div class="tasks">
-                <div class="task">
-                    <input 
-                    type="checkbox"
-                    id="task-1"
-                    />
-                    <label for="task-1">
-                    <span 
-                    class="custom-checkbox"></span>    
-                    check the box</label>
-                </div>
-                <!-- close task 1 -->
-                <div class="task">
-                    <input 
-                    type="checkbox"
-                    id="task-2"
-                    />
-                    <label for="task-2">
-                    <span 
-                    class="custom-checkbox"></span>    
-                    another task</label>
-                </div>
-                <!-- close task 2 -->
-                <div class="task">
-                    <input 
-                    type="checkbox"
-                    id="task-3"
-                    />
-                    <label for="task-3">
-                    <span 
-                    class="custom-checkbox"></span>    
-                    last task</label>
-                </div>
-                <!-- close task3 -->
-            </div>
+            <div class="tasks" data-tasks></div>
             <div class="new-task-creator">
-                <form action="">
+                <form action="" data-new-task-form>
                     <input 
                     type="text"
+                    data-new-task-input
                     class="new task"
                     placeholder="new task name"
                     aria-label="new task name"
@@ -81,12 +46,21 @@
                 </form>
             </div>
             <div class="delete-stuff">
-                <button class="btn delete">CLEAR COMPLETED TASK</button>
-                <button class="btn delete">DELETE TASK</button>
+                <button class="btn delete" data-clear-complete-button>CLEAR COMPLETED TASK</button>
+                <button class="btn delete" data-delete-list-button>DELETE TASK</button>
             </div>
         </div>
     </div>
-
+<template id="task-template">
+    <div class="task">
+        <input 
+        type="checkbox" />
+        <label>
+        <span 
+        class="custom-checkbox"></span>
+    </label>
+    </div>
+</template>
     <script defer src="js/index.js"></script>
 </body>
 </html>
