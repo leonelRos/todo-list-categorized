@@ -1,3 +1,6 @@
+[build.environment]
+  NODE_VERSION = "22"
+
 [[redirects]]
   from = "/api/*"
   to = "https://todo-list-categorized-production.up.railway.app/api/:splat"
