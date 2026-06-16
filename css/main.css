@@ -36,6 +36,10 @@
     display: flex;
     flex-direction: column;
     gap: 3rem;
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 0 1rem;
   }
   
   .all-tasks {
@@ -276,4 +280,54 @@
     left: 0;
     bottom: -35px;
     color: var(--clr-light);
+  }
+
+  /* ---------- Mobile ---------- */
+  @media (max-width: 600px) {
+    body {
+      font-size: 1.15rem;
+    }
+
+    .title {
+      font-size: calc(8vw + 0.5rem);
+      padding: 1rem;
+      margin: 0 0 0.5em;
+    }
+
+    .todo-flex {
+      gap: 2rem;
+      padding: 0 0.75rem;
+    }
+
+    .todo-list {
+      --spacer: 1.25rem;
+    }
+
+    /* let the action buttons sit in normal flow so they never run off-screen */
+    .todo-body {
+      padding-bottom: 3.5rem;
+    }
+
+    .delete-stuff {
+      position: static;
+      width: auto;
+      margin-top: 1.5rem;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    /* bigger, easier tap targets */
+    .btn.create {
+      font-size: 2rem;
+      padding: 0.25em 0.5em;
+    }
+
+    .btn.delete {
+      font-size: 1rem;
+      padding: 0.5em 0;
+    }
+
+    .new {
+      padding: 0.5em 0.25em;
+    }
   }

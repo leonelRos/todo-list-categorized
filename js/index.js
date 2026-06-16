@@ -11,85 +11,85 @@ const newTaskForm = document.querySelector('[data-new-task-form]')
 const newTaskInput = document.querySelector('[data-new-task-input]')
 const clearCompleteTaskButton = document.querySelector('[data-clear-complete-button]')
 
-//creating a new key:value to save our data
-const LOCAL_STORAGE_LIST_KEY = 'task.lists'
-const LOCAL_STORAGE_SELECETED_LIST_ID_KEY = 'task.selectedListId'
-//create a variable list
-var lists = JSON.parse(localStorage.getItem(LOCAL_STORAGE_LIST_KEY)) || [];
-var selectedListId = localStorage.getItem(LOCAL_STORAGE_SELECETED_LIST_ID_KEY)
+// data now lives in MongoDB; `lists` is just an in-memory copy of what the server returns
+let lists = [];
+let selectedListId = null;
 
-listContainer.addEventListener('click', e => {
+listContainer.addEventListener('click', async e => {
     if(e.target.tagName.toLowerCase() === 'li') {
         selectedListId = e.target.dataset.listId
-        saveAndRender();
+        render()
     }
-})
-tasksContainer.addEventListener('click', e => {
-    if(e.target.tagName.toLowerCase() === 'input'){
-        const selectedList = lists.find(list => list.id === selectedListId)
-        const selectedTask = selectedList.tasks.find(task => task.id  === e.target.id)
-        selectedTask.complete = e.target.checked
-        save();
-        renderTaskCount(selectedList)
-    }
-})
-clearCompleteTaskButton.addEventListener('click', e => {
-    const selectedList = lists.find(list => list.id === selectedListId)
-    selectedList.tasks = selectedList.tasks.filter(task =>  !task.complete)
-    saveAndRender();
 })
 
-deleteListButton.addEventListener('click', e => {
-    lists = lists.filter(list => list.id !== selectedListId)
-    selectedListId = null;
-    saveAndRender()
+tasksContainer.addEventListener('click', async e => {
+    if(e.target.tagName.toLowerCase() === 'input'){
+        await fetch(`/api/lists/${selectedListId}/tasks/${e.target.id}`, {
+            method: 'PATCH',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({complete: e.target.checked})
+        })
+        await loadAndRender();
+    }
 })
-newListForm.addEventListener('submit', e => {
+
+clearCompleteTaskButton.addEventListener('click', async e => {
+    await fetch(`/api/lists/${selectedListId}/tasks/completed`, { method: 'DELETE' })
+    await loadAndRender();
+})
+
+deleteListButton.addEventListener('click', async e => {
+    await fetch(`/api/lists/${selectedListId}`, { method: 'DELETE' })
+    selectedListId = null;
+    await loadAndRender();
+})
+
+newListForm.addEventListener('submit', async e => {
     e.preventDefault()
     //getting the name of the input
     const listName = newInputForm.value
-    if(listName=== null || listName === "") return
-    const list = createList(listName)
+    if(!listName) return;
+    await fetch('/api/lists', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({name: listName})
+    })
     newInputForm.value = null
-    lists.push(list)
-    saveAndRender();
+    await loadAndRender();
 })
 
-newTaskForm.addEventListener('submit', e => {
+newTaskForm.addEventListener('submit', async e => {
     e.preventDefault()
     //getting the name of the input
     const taskName = newTaskInput.value
-    if(taskName === null || taskName === "") return
-    const task = createTask(taskName)
+    if(!taskName) return;
+    await fetch(`/api/lists/${selectedListId}/tasks`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({name: taskName})
+    })
     newTaskInput.value = null
-    const selectedList = lists.find(list => list.id === selectedListId)
-    selectedList.tasks.push(task)
-    saveAndRender();
+    await loadAndRender();
 })
-function createList(name) {
-    return {id: Date.now().toString(), name: name, tasks: [] }
+
+// fetch all lists from the backend into our local `lists` variable
+async function loadLists () {
+    const res = await fetch('/api/lists');
+    lists = await res.json()
 }
 
-function createTask(name) {
-    return {id: Date.now().toString(), name: name, complete: false}
-}
-function saveAndRender () {
-    save()
-    render()
+// pull fresh data from the server, then re-draw the screen
+async function loadAndRender() {
+    await loadLists();
+    render();
 }
 
-//to save this list in the local storage
-function save () {
-    localStorage.setItem(LOCAL_STORAGE_LIST_KEY, JSON.stringify(lists))
-    localStorage.setItem(LOCAL_STORAGE_SELECETED_LIST_ID_KEY, selectedListId)
-
-}
 function render() {
     clearListContainer(listContainer)
    renderLists();
 
-   const selectedList = lists.find(list => list.id === selectedListId)
-   if(selectedListId == null){
+   const selectedList = lists.find(list => list._id === selectedListId)
+   if(selectedList == null){
     listDisplayContainer.style.display = 'none';
    } else {
     listDisplayContainer.style.display = '';
@@ -104,10 +104,10 @@ function renderTasks(selectedList){
     selectedList.tasks.forEach(task => {
         const taskElement = document.importNode(taskTemplate.content, true)
         const checkbox = taskElement.querySelector('input')
-        checkbox.id = task.id
+        checkbox.id = task._id
         checkbox.checked = task.complete
         const label = taskElement.querySelector('label')
-        label.htmlFor = task.id
+        label.htmlFor = task._id
         label.append(task.name)
         tasksContainer.appendChild(taskElement)
     })
@@ -124,10 +124,10 @@ function renderLists() {
         //here we create a li tag for our tasl-list
         const listElement = document.createElement('li');
         //we are giving the Id an atribute
-        listElement.dataset.listId = list.id
+        listElement.dataset.listId = list._id
         listElement.classList.add("list-name")
         listElement.innerHTML = list.name
-        if(list.id === selectedListId){
+        if(list._id === selectedListId){
             listElement.classList.add('active-list')
         }
         listContainer.appendChild(listElement);
@@ -139,4 +139,5 @@ function clearListContainer (element){
         element.removeChild(element.firstChild)
     }
 }
-render();
+
+loadAndRender();
